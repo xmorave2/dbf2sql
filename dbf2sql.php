@@ -80,11 +80,11 @@ function mapTypeToSql($type_short, $length, $decimal) {
         case Record::DBFFIELD_TYPE_MEMO: return "BLOB";           // Memo type field
         case Record::DBFFIELD_TYPE_CHAR: return "VARCHAR($length)";     // Character field
         case Record::DBFFIELD_TYPE_DOUBLE: return "DOUBLE($length,$decimal)";   // Double
-        case Record::DBFFIELD_TYPE_NUMERIC: return "INTEGER($length)";  // Numeric
+        case Record::DBFFIELD_TYPE_NUMERIC: return "INTEGER";  // Numeric
         case Record::DBFFIELD_TYPE_FLOATING: return "FLOAT($length,$decimal)"; // Floating point
         case Record::DBFFIELD_TYPE_DATE: return "DATE";     // Date
         case Record::DBFFIELD_TYPE_LOGICAL: return "TINYINT(1)";  // Logical - ? Y y N n T t F f (? when not initialized).
         case Record::DBFFIELD_TYPE_DATETIME: return "DATETIME"; // DateTime
-        case Record::DBFFIELD_TYPE_INDEX: return "INTEGER($length)";    // Index
+        case Record::DBFFIELD_TYPE_INDEX: return "INTEGER";    // Index
    }
 }
