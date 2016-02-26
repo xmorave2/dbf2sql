@@ -69,7 +69,7 @@ foreach($operands as $sourcefile) {
             if(($column->getType() == Record::DBFFIELD_TYPE_DATETIME) && $cell) {
                 $cell = date('Y-m-d H:i:s', $cell-3600);
             }
-            $insertLine .= "\"" . $cell . "\",";
+            $insertLine .= "\"" . addslashes($cell) . "\",";
         }
         $insertLine = substr($insertLine, 0, -1) . ");\n";
         fwrite($destination, $insertLine);
