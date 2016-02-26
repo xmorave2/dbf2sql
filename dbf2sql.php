@@ -53,7 +53,7 @@ foreach($operands as $sourcefile) {
         $createString .= mapTypeToSql($column->getType(), $column->getLength(), $column->getDecimalCount());
         $createString .= ",\n";
     } 
-    $createString = substr($createString, 0, -2) . "\n);\n";
+    $createString = substr($createString, 0, -2) . "\n) CHARACTER SET utf8 COLLATE utf8_unicode_ci;\n";
 
     fwrite($destination, $createString);
 
