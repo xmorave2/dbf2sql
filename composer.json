@@ -1,0 +1,7 @@
+{
+    "require": {
+        "hisamu/php-xbase": "*",
+        "ulrichsg/getopt-php": "2.3.*"
+    },
+    "minimum-stability": "dev"
+}
