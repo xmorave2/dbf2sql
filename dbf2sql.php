@@ -66,7 +66,7 @@ foreach($operands as $sourcefile) {
         $insertLine = "INSERT INTO $tableName VALUES (";
         foreach($source->getColumns() as $column) {
             $cell = $record->getObject($column);
-            if($column->getType() == Record::DBFFIELD_TYPE_DATETIME) {
+            if(($column->getType() == Record::DBFFIELD_TYPE_DATETIME) && $cell) {
                 $cell = date('Y-m-d H:i:s', $cell-3600);
             }
             $insertLine .= "\"" . $cell . "\",";
