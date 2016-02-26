@@ -38,14 +38,16 @@ foreach($operands as $sourcefile) {
     $destinationfile = substr($sourcefile, 0,-3) . "sql";
     $destination = fopen($destinationfile, 'w');
 
-    echo "Processing file $sourcefile to $destinationfile";
-    if($encoding) { echo " using $encoding encoding"; }
-    echo "\n";
     if($encoding) { 
         $source = new Table($sourcefile, null, $encoding);
     } else {
         $source = new Table($sourcefile);
     }
+
+    echo "Processing " . $source->getRecordCount() . " records from file $sourcefile to $destinationfile";
+    if($encoding) { echo " using $encoding encoding"; }
+    echo "\n";
+
     $tableName = basename(strtolower($source->getName()), ".dbf");
     $createString = "CREATE TABLE $tableName (\n";
     foreach($source->getColumns() as $column) {
