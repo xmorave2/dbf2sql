@@ -58,6 +58,9 @@ foreach($operands as $sourcefile) {
     fwrite($destination, $createString);
 
     while ($record = $source->nextRecord()) {
+        if($record->isDeleted()) { 
+            continue; 
+        }
         $insertLine = "INSERT INTO $tableName VALUES (";
         foreach($source->getColumns() as $column) {
             $cell = $record->getObject($column);
