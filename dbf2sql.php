@@ -51,6 +51,9 @@ foreach($operands as $sourcefile) {
     $tableName = basename(strtolower($source->getName()), ".dbf");
     $createString = "CREATE TABLE $tableName (\n";
     foreach($source->getColumns() as $column) {
+        if($column->getType() == Record::DBFFIELD_TYPE_MEMO) {
+            continue;
+        }
         $createString .= "\t" . $column->getName() . " ";
         $createString .= mapTypeToSql($column->getType(), $column->getLength(), $column->getDecimalCount());
         $createString .= ",\n";
@@ -65,6 +68,9 @@ foreach($operands as $sourcefile) {
         }
         $insertLine = "INSERT INTO $tableName VALUES (";
         foreach($source->getColumns() as $column) {
+            if($column->getType() == Record::DBFFIELD_TYPE_MEMO) {
+                continue;
+            }
             $cell = $record->getObject($column);
             if(($column->getType() == Record::DBFFIELD_TYPE_DATETIME) && $cell) {
                 $cell = date('Y-m-d H:i:s', $cell-3600);
@@ -79,7 +85,7 @@ foreach($operands as $sourcefile) {
 
 function mapTypeToSql($type_short, $length, $decimal) {
     switch ($type_short) {
-        case Record::DBFFIELD_TYPE_MEMO: return "BLOB";           // Memo type field
+        case Record::DBFFIELD_TYPE_MEMO: return "TEXT";           // Memo type field
         case Record::DBFFIELD_TYPE_CHAR: return "VARCHAR($length)";     // Character field
         case Record::DBFFIELD_TYPE_DOUBLE: return "DOUBLE($length,$decimal)";   // Double
         case Record::DBFFIELD_TYPE_NUMERIC: return "INTEGER";  // Numeric
