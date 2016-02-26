@@ -51,7 +51,7 @@ foreach($operands as $sourcefile) {
     $tableName = basename(strtolower($source->getName()), ".dbf");
     $createString = "CREATE TABLE $tableName (\n";
     foreach($source->getColumns() as $column) {
-        if($column->getType() == Record::DBFFIELD_TYPE_MEMO) {
+        if(($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
             continue;
         }
         $createString .= "\t" . $column->getName() . " ";
@@ -68,7 +68,7 @@ foreach($operands as $sourcefile) {
         }
         $insertLine = "INSERT INTO $tableName VALUES (";
         foreach($source->getColumns() as $column) {
-            if($column->getType() == Record::DBFFIELD_TYPE_MEMO) {
+            if(($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
                 continue;
             }
             $cell = $record->getObject($column);
