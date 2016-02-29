@@ -81,6 +81,7 @@ foreach($operands as $sourcefile) {
         fwrite($destination, $insertLine);
     }
     fclose($destination);
+    echo "Export done: " . $source->getDeleteCount() . " deleted records ommitted\n";
 }
 
 function mapTypeToSql($type_short, $length, $decimal) {
