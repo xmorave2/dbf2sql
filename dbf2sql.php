@@ -49,12 +49,12 @@ foreach($operands as $sourcefile) {
     echo "\n";
 
     $tableName = basename(strtolower($source->getName()), ".dbf");
-    $createString = "CREATE TABLE $tableName (\n";
+    $createString = "CREATE TABLE " . escName($tableName) . " (\n";
     foreach($source->getColumns() as $column) {
         if(($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
             continue;
         }
-        $createString .= "\t" . $column->getName() . " ";
+        $createString .= "\t" . escName($column->getName()) . " ";
         $createString .= mapTypeToSql($column->getType(), $column->getLength(), $column->getDecimalCount());
         $createString .= ",\n";
     } 
@@ -66,7 +66,7 @@ foreach($operands as $sourcefile) {
         if($record->isDeleted()) { 
             continue; 
         }
-        $insertLine = "INSERT INTO $tableName VALUES (";
+        $insertLine = "INSERT INTO " . escName($tableName) . " VALUES (";
         foreach($source->getColumns() as $column) {
             if(($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
                 continue;
@@ -95,4 +95,8 @@ function mapTypeToSql($type_short, $length, $decimal) {
         case Record::DBFFIELD_TYPE_DATETIME: return "DATETIME";                // DateTime
         case Record::DBFFIELD_TYPE_INDEX: return "INTEGER";                    // Index
    }
+}
+
+function escName($name) {
+    return "`" . $name . "`";
 }
