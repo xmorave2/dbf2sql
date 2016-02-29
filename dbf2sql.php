@@ -14,13 +14,10 @@ function usage($errormessage = "error") {
     echo "Default encoding is utf-8, often used encoding in dbf files is CP1250, or CP1251\n\n";
 }
 
-$getopt = new Getopt(array(
-    new Option('e', 'encoding', Getopt::REQUIRED_ARGUMENT)
-));
-
+$encOption = new Option('e', 'encoding', Getopt::REQUIRED_ARGUMENT);
+$getopt = new Getopt([$encOption]);
 $getopt->parse();
-$encoding = $getopt["encoding"];
-
+$encoding = $getopt["encoding"] ? $getopt["encoding"] : "UTF-8";
 $operands = $getopt->getOperands();
 
 if(count($operands) == 0) {
@@ -29,24 +26,11 @@ if(count($operands) == 0) {
 }
 
 foreach($operands as $sourcefile) {
-    $createString = "CREATE TABLE";
-    if(!in_array(substr($sourcefile, -4), [".dbf", ".DBF"])) {
-        echo "File $sourcefile is not valid DBF";
-        continue;
-    }
-
     $destinationfile = substr($sourcefile, 0,-3) . "sql";
     $destination = fopen($destinationfile, 'w');
+    $source = new Table($sourcefile, null, $encoding);
 
-    if($encoding) { 
-        $source = new Table($sourcefile, null, $encoding);
-    } else {
-        $source = new Table($sourcefile);
-    }
-
-    echo "Processing " . $source->getRecordCount() . " records from file $sourcefile to $destinationfile";
-    if($encoding) { echo " using $encoding encoding"; }
-    echo "\n";
+    echo "Processing " . $source->getRecordCount() . " records from file $sourcefile to $destinationfile using $encoding encoding\n";
 
     $tableName = basename(strtolower($source->getName()), ".dbf");
     $createString = "CREATE TABLE " . escName($tableName) . " (\n";
@@ -59,7 +43,6 @@ foreach($operands as $sourcefile) {
         $createString .= ",\n";
     } 
     $createString = substr($createString, 0, -2) . "\n) CHARACTER SET utf8 COLLATE utf8_unicode_ci;\n";
-
     fwrite($destination, $createString);
 
     while ($record = $source->nextRecord()) {
