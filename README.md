@@ -3,7 +3,7 @@ DBF 2 SQL is small command line tool for converting DBF files top MySQL dump for
 
 # Installation
 
-1. Install php and composer
+1. Install php and composer (https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx)
 
 2. Clone repository:
 
