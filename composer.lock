@@ -1,11 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "8620cb2d533adbbee6c46f1f58cbd67f",
-    "content-hash": "1f84e82f6e4a92a217e0e37b7729f130",
     "packages": [
         {
             "name": "hisamu/php-xbase",
@@ -13,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/hisamu/php-xbase.git",
-                "reference": "061f5b3b745040e1b21947faba9a17d743a53269"
+                "reference": "5be81896c50cac893ea3db347a426137c4d9e9eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hisamu/php-xbase/zipball/061f5b3b745040e1b21947faba9a17d743a53269",
-                "reference": "061f5b3b745040e1b21947faba9a17d743a53269",
+                "url": "https://api.github.com/repos/hisamu/php-xbase/zipball/5be81896c50cac893ea3db347a426137c4d9e9eb",
+                "reference": "5be81896c50cac893ea3db347a426137c4d9e9eb",
                 "shasum": ""
             },
             "require": {
@@ -47,7 +46,7 @@
                 "dbase",
                 "foxpro"
             ],
-            "time": "2016-02-15 13:26:14"
+            "time": "2016-04-19 12:51:23"
         },
         {
             "name": "ulrichsg/getopt-php",
@@ -95,7 +94,6 @@
     "minimum-stability": "dev",
     "stability-flags": [],
     "prefer-stable": false,
-    "prefer-lowest": false,
     "platform": [],
     "platform-dev": []
 }

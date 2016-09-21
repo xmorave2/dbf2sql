@@ -10,14 +10,17 @@ use Ulrichsg\Getopt\Option;
 function usage($errormessage = "error") {
     global $argv;
     echo "\n$errormessage\n\n";
-    echo "Usage: $argv[0] [-e encoding] source_file [another_source_file [...]]\n\n";
-    echo "Default encoding is utf-8, often used encoding in dbf files is CP1250, or CP1251\n\n";
+    echo "Usage: $argv[0] [-e encoding] [-b batchsize] source_file [another_source_file [...]]\n\n";
+    echo "Default encoding is utf-8, often used encoding in dbf files is CP1250, or CP1251.\n";
+    echo "Default batch size id 1000 rows inserted at once.\n\n";
 }
 
 $encOption = new Option('e', 'encoding', Getopt::REQUIRED_ARGUMENT);
-$getopt = new Getopt([$encOption]);
+$batchOption = new Option('b', 'batchsize', Getopt::REQUIRED_ARGUMENT);
+$getopt = new Getopt([$encOption, $batchOption]);
 $getopt->parse();
 $encoding = $getopt["encoding"] ? $getopt["encoding"] : "UTF-8";
+$batchSize = $getopt["batchsize"] ? $getopt["batchsize"] : 1000;
 $operands = $getopt->getOperands();
 
 if(count($operands) == 0) {
@@ -42,14 +45,21 @@ foreach($operands as $sourcefile) {
         $createString .= mapTypeToSql($column->getType(), $column->getLength(), $column->getDecimalCount());
         $createString .= ",\n";
     } 
-    $createString = substr($createString, 0, -2) . "\n) CHARACTER SET utf8 COLLATE utf8_unicode_ci;\n";
+    $createString = substr($createString, 0, -2) . "\n) CHARACTER SET utf8 COLLATE utf8_unicode_ci;\n\n";
     fwrite($destination, $createString);
 
+	$rows = 0;
     while ($record = $source->nextRecord()) {
         if($record->isDeleted()) { 
             continue; 
         }
-        $insertLine = "INSERT INTO " . escName($tableName) . " VALUES (";
+        if ($rows == 0) {
+	        $insertLine = "INSERT INTO " . escName($tableName) . " VALUES \n";
+	    }
+	    else {
+	    	$insertLine .= ",\n";
+	    }
+	    $row = "\t(";
         foreach($source->getColumns() as $column) {
             if(($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
                 continue;
@@ -58,10 +68,23 @@ foreach($operands as $sourcefile) {
             if(($column->getType() == Record::DBFFIELD_TYPE_DATETIME) && $cell) {
                 $cell = date('Y-m-d H:i:s', $cell-3600);
             }
-            $insertLine .= "\"" . addslashes($cell) . "\",";
+            $row .= "\"" . addslashes($cell) . "\",";
         }
-        $insertLine = substr($insertLine, 0, -1) . ");\n";
-        fwrite($destination, $insertLine);
+        $row = substr($row, 0, -1) . ")";
+        $insertLine .= $row;
+        if ($rows + 1 == $batchSize) {
+        	$insertLine .= ";\n\n";
+        	$rows = 0;
+	        fwrite($destination, $insertLine);
+	        $insertLine = "";
+        }
+        else {
+        	$rows++;
+        }
+    }
+    if (!empty($insertLine)) {
+		$insertLine .= ";\n\n";
+    	fwrite($destination, $insertLine);
     }
     fclose($destination);
     echo "Export done: " . $source->getDeleteCount() . " deleted records ommitted\n";
