@@ -1,10 +1,11 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8620cb2d533adbbee6c46f1f58cbd67f",
+    "hash": "7fcc75b5be93e75094f3c697ff52f602",
+    "content-hash": "2df8949c0dc49e020245bda51406cb94",
     "packages": [
         {
             "name": "hisamu/php-xbase",
@@ -94,6 +95,7 @@
     "minimum-stability": "dev",
     "stability-flags": [],
     "prefer-stable": false,
+    "prefer-lowest": false,
     "platform": [],
     "platform-dev": []
 }

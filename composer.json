@@ -1,4 +1,13 @@
 {
+    "name" : "xmorave2/dbf2sql",
+    "description" : "CLI tool for converting DBF files to MySQL dump",
+    "authors": [
+        {
+            "name": "Josef Moravec",
+            "email": "josef.moravec@gmail.com"
+        }
+    ],
+    "license" : "Apache-2.0",
     "require": {
         "hisamu/php-xbase": "*",
         "ulrichsg/getopt-php": "2.3.*"
