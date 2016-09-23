@@ -48,18 +48,17 @@ foreach($operands as $sourcefile) {
     $createString = substr($createString, 0, -2) . "\n) CHARACTER SET utf8 COLLATE utf8_unicode_ci;\n\n";
     fwrite($destination, $createString);
 
-	$rows = 0;
+    $rows = 0;
     while ($record = $source->nextRecord()) {
         if($record->isDeleted()) { 
             continue; 
         }
         if ($rows == 0) {
-	        $insertLine = "INSERT INTO " . escName($tableName) . " VALUES \n";
-	    }
-	    else {
-	    	$insertLine .= ",\n";
-	    }
-	    $row = "\t(";
+            $insertLine = "INSERT INTO " . escName($tableName) . " VALUES \n";
+        } else {
+            $insertLine .= ",\n";
+        }
+        $row = "\t(";
         foreach($source->getColumns() as $column) {
             if(($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
                 continue;
@@ -73,18 +72,17 @@ foreach($operands as $sourcefile) {
         $row = substr($row, 0, -1) . ")";
         $insertLine .= $row;
         if ($rows + 1 == $batchSize) {
-        	$insertLine .= ";\n\n";
-        	$rows = 0;
-	        fwrite($destination, $insertLine);
-	        $insertLine = "";
-        }
-        else {
-        	$rows++;
+            $insertLine .= ";\n\n";
+            $rows = 0;
+            fwrite($destination, $insertLine);
+            $insertLine = "";
+        } else {
+            $rows++;
         }
     }
     if (!empty($insertLine)) {
-		$insertLine .= ";\n\n";
-    	fwrite($destination, $insertLine);
+        $insertLine .= ";\n\n";
+        fwrite($destination, $insertLine);
     }
     fclose($destination);
     echo "Export done: " . $source->getDeleteCount() . " deleted records ommitted\n";
