@@ -7,7 +7,8 @@ use XBase\Record;
 use Ulrichsg\Getopt\Getopt;
 use Ulrichsg\Getopt\Option;
 
-function usage($errormessage = "error") {
+function usage($errormessage = "error")
+{
     global $argv;
     echo "\n$errormessage\n\n";
     echo "Usage: $argv[0] [-e encoding] [-b batchsize] source_file [another_source_file [...]]\n\n";
@@ -23,13 +24,13 @@ $encoding = $getopt["encoding"] ? $getopt["encoding"] : "UTF-8";
 $batchSize = $getopt["batchsize"] ? $getopt["batchsize"] : 1000;
 $operands = $getopt->getOperands();
 
-if(count($operands) == 0) {
+if (count($operands) == 0) {
     usage("Missing parameters");
     exit;
 }
 
-foreach($operands as $sourcefile) {
-    $destinationfile = substr($sourcefile, 0,-3) . "sql";
+foreach ($operands as $sourcefile) {
+    $destinationfile = substr($sourcefile, 0, -3) . "sql";
     $destination = fopen($destinationfile, 'w');
     $source = new Table($sourcefile, null, $encoding);
 
@@ -37,21 +38,21 @@ foreach($operands as $sourcefile) {
 
     $tableName = basename(strtolower($source->getName()), ".dbf");
     $createString = "CREATE TABLE " . escName($tableName) . " (\n";
-    foreach($source->getColumns() as $column) {
-        if(($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
+    foreach ($source->getColumns() as $column) {
+        if (($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
             continue;
         }
         $createString .= "\t" . escName($column->getName()) . " ";
         $createString .= mapTypeToSql($column->getType(), $column->getLength(), $column->getDecimalCount());
         $createString .= ",\n";
-    } 
+    }
     $createString = substr($createString, 0, -2) . "\n) CHARACTER SET utf8 COLLATE utf8_unicode_ci;\n\n";
     fwrite($destination, $createString);
 
     $rows = 0;
     while ($record = $source->nextRecord()) {
-        if($record->isDeleted()) { 
-            continue; 
+        if ($record->isDeleted()) {
+            continue;
         }
         if ($rows == 0) {
             $insertLine = "INSERT INTO " . escName($tableName) . " VALUES \n";
@@ -59,12 +60,12 @@ foreach($operands as $sourcefile) {
             $insertLine .= ",\n";
         }
         $row = "\t(";
-        foreach($source->getColumns() as $column) {
-            if(($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
+        foreach ($source->getColumns() as $column) {
+            if (($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
                 continue;
             }
             $cell = $record->getObject($column);
-            if(($column->getType() == Record::DBFFIELD_TYPE_DATETIME) && $cell) {
+            if (($column->getType() == Record::DBFFIELD_TYPE_DATETIME) && $cell) {
                 $cell = date('Y-m-d H:i:s', $cell-3600);
             }
             $row .= "\"" . addslashes($cell) . "\",";
@@ -88,7 +89,8 @@ foreach($operands as $sourcefile) {
     echo "Export done: " . $source->getDeleteCount() . " deleted records ommitted\n";
 }
 
-function mapTypeToSql($type_short, $length, $decimal) {
+function mapTypeToSql($type_short, $length, $decimal)
+{
     switch ($type_short) {
         case Record::DBFFIELD_TYPE_MEMO: return "TEXT";                        // Memo type field
         case Record::DBFFIELD_TYPE_CHAR: return "VARCHAR($length)";            // Character field
@@ -102,6 +104,7 @@ function mapTypeToSql($type_short, $length, $decimal) {
    }
 }
 
-function escName($name) {
+function escName($name)
+{
     return "`" . $name . "`";
 }
