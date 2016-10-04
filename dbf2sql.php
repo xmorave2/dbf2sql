@@ -13,7 +13,7 @@ function usage($errormessage = "error")
     echo "\n$errormessage\n\n";
     echo "Usage: $argv[0] [-e encoding] [-b batchsize] [-d destinationdir] source_file [another_source_file [...]]\n\n";
     echo "Default encoding is utf-8, often used encoding in dbf files is CP1250, or CP1251.\n";
-    echo "Default batch size id 1000 rows inserted at once.\n";
+    echo "Default batch size is 1000 rows inserted at once.\n";
     echo "Default destination directory is source file's one.\n\n";
 }
 
