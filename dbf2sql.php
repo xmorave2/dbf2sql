@@ -11,17 +11,20 @@ function usage($errormessage = "error")
 {
     global $argv;
     echo "\n$errormessage\n\n";
-    echo "Usage: $argv[0] [-e encoding] [-b batchsize] source_file [another_source_file [...]]\n\n";
+    echo "Usage: $argv[0] [-e encoding] [-b batchsize] [-d destinationdir] source_file [another_source_file [...]]\n\n";
     echo "Default encoding is utf-8, often used encoding in dbf files is CP1250, or CP1251.\n";
     echo "Default batch size id 1000 rows inserted at once.\n\n";
+    echo "Default destination directory is source file's one.\n\n";
 }
 
 $encOption = new Option('e', 'encoding', Getopt::REQUIRED_ARGUMENT);
 $batchOption = new Option('b', 'batchsize', Getopt::REQUIRED_ARGUMENT);
-$getopt = new Getopt([$encOption, $batchOption]);
+$destdirOption = new Option('d', 'destinationdir', Getopt::REQUIRED_ARGUMENT);
+$getopt = new Getopt([$encOption, $batchOption, $destdirOption]);
 $getopt->parse();
 $encoding = $getopt["encoding"] ? $getopt["encoding"] : "UTF-8";
 $batchSize = $getopt["batchsize"] ? $getopt["batchsize"] : 1000;
+$destDir = $getopt["destinationdir"] ? $getopt["destinationdir"] : false;
 $operands = $getopt->getOperands();
 
 if (count($operands) == 0) {
@@ -29,8 +32,14 @@ if (count($operands) == 0) {
     exit;
 }
 
+if ($destDir && !is_writable($destDir)) {
+    echo "Destination directory {$destDir} does not exist or is not writable!\n";
+    exit;
+}
+
 foreach ($operands as $sourcefile) {
-    $destinationfile = substr($sourcefile, 0, -3) . "sql";
+    $pathInfo = pathinfo($sourcefile);
+    $destinationfile = ($destDir ? $destDir : $pathInfo['dirname']) . "/" . $pathInfo['filename'] . ".sql";
     $destination = fopen($destinationfile, 'w');
     $source = new Table($sourcefile, null, $encoding);
 
