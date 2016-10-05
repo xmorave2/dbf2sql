@@ -11,7 +11,7 @@ DBF 2 SQL is small command line tool for converting DBF files top MySQL dump for
 
 # Use
 
-<code>php dbf2sql [-e encoding] list_of_dbf_files</code>
+<code>php dbf2sql.php [-e encoding] [-b batchsize] [-d destinationdir] list_of_dbf_files</code>
 
 Example: 
 
