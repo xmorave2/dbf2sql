@@ -119,9 +119,8 @@ function mapTypeToSql($type_short, $length, $decimal)
 
     if (array_key_exists($type_short, $types)) {
         return $types[$type_short];
-    } else {
-        return false;
     }
+    return false;
 }
 
 function escName($name)
