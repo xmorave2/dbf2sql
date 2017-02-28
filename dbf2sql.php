@@ -38,6 +38,7 @@ if ($destDir && !is_writable($destDir)) {
 }
 
 foreach ($operands as $sourcefile) {
+    //TODO: make the code objective
     $pathInfo = pathinfo($sourcefile);
     $destinationfile = ($destDir ? $destDir : $pathInfo['dirname']) . "/" . $pathInfo['filename'] . ".sql";
     $destination = fopen($destinationfile, 'w');
@@ -48,12 +49,13 @@ foreach ($operands as $sourcefile) {
     $tableName = basename(strtolower($source->getName()), ".dbf");
     $createString = "CREATE TABLE " . escName($tableName) . " (\n";
     foreach ($source->getColumns() as $column) {
-        if (($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
+        $type = mapTypeToSql($column->getType(), $column->getLength(), $column->getDecimalCount());
+        if (($column->getType() == Record::DBFFIELD_TYPE_MEMO)
+            || ($column->getName() == "_nullflags")
+            || ($type === false)) {
             continue;
         }
-        $createString .= "\t" . escName($column->getName()) . " ";
-        $createString .= mapTypeToSql($column->getType(), $column->getLength(), $column->getDecimalCount());
-        $createString .= ",\n";
+        $createString .= "\t" . escName($column->getName()) . " $type,\n";
     }
     $createString = substr($createString, 0, -2) . "\n) CHARACTER SET utf8 COLLATE utf8_unicode_ci;\n\n";
     fwrite($destination, $createString);
@@ -70,7 +72,10 @@ foreach ($operands as $sourcefile) {
         }
         $row = "\t(";
         foreach ($source->getColumns() as $column) {
-            if (($column->getType() == Record::DBFFIELD_TYPE_MEMO) || ($column->getName() == "_nullflags")) {
+            $type = mapTypeToSql($column->getType(), $column->getLength(), $column->getDecimalCount());
+            if (($column->getType() == Record::DBFFIELD_TYPE_MEMO)
+                || ($column->getName() == "_nullflags")
+                || ($type === false)) {
                 continue;
             }
             $cell = $record->getObject($column);
@@ -100,17 +105,23 @@ foreach ($operands as $sourcefile) {
 
 function mapTypeToSql($type_short, $length, $decimal)
 {
-    switch ($type_short) {
-        case Record::DBFFIELD_TYPE_MEMO: return "TEXT";                        // Memo type field
-        case Record::DBFFIELD_TYPE_CHAR: return "VARCHAR($length)";            // Character field
-        case Record::DBFFIELD_TYPE_DOUBLE: return "DOUBLE($length,$decimal)";  // Double
-        case Record::DBFFIELD_TYPE_NUMERIC: return "INTEGER";                  // Numeric
-        case Record::DBFFIELD_TYPE_FLOATING: return "FLOAT($length,$decimal)"; // Floating point
-        case Record::DBFFIELD_TYPE_DATE: return "DATE";                        // Date
-        case Record::DBFFIELD_TYPE_LOGICAL: return "TINYINT(1)";               // Logical - ? Y y N n T t F f (? when not initialized).
-        case Record::DBFFIELD_TYPE_DATETIME: return "DATETIME";                // DateTime
-        case Record::DBFFIELD_TYPE_INDEX: return "INTEGER";                    // Index
-   }
+    $types = [
+        Record::DBFFIELD_TYPE_MEMO => "TEXT",                        // Memo type field
+        Record::DBFFIELD_TYPE_CHAR => "VARCHAR($length)",            // Character field
+        Record::DBFFIELD_TYPE_DOUBLE => "DOUBLE($length,$decimal)",  // Double
+        Record::DBFFIELD_TYPE_NUMERIC => "INTEGER",                  // Numeric
+        Record::DBFFIELD_TYPE_FLOATING => "FLOAT($length,$decimal)", // Floating point
+        Record::DBFFIELD_TYPE_DATE => "DATE",                        // Date
+        Record::DBFFIELD_TYPE_LOGICAL => "TINYINT(1)",               // Logical - ? Y y N n T t F f (? when not initialized).
+        Record::DBFFIELD_TYPE_DATETIME => "DATETIME",                // DateTime
+        Record::DBFFIELD_TYPE_INDEX => "INTEGER",                    // Index
+    ];
+
+    if (array_key_exists($type_short, $types)) {
+        return $types[$type_short];
+    } else {
+        return false;
+    }
 }
 
 function escName($name)
