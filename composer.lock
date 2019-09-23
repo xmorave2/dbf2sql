@@ -1,23 +1,22 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "hash": "7fcc75b5be93e75094f3c697ff52f602",
-    "content-hash": "2df8949c0dc49e020245bda51406cb94",
+    "content-hash": "4b149599d17ceb94fc10d95a95ac3169",
     "packages": [
         {
             "name": "hisamu/php-xbase",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/hisamu/php-xbase.git",
+                "url": "https://github.com/luads/php-xbase.git",
                 "reference": "26ceae6c7ca67d67132b5c1108e5e2906343631d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hisamu/php-xbase/zipball/26ceae6c7ca67d67132b5c1108e5e2906343631d",
+                "url": "https://api.github.com/repos/luads/php-xbase/zipball/26ceae6c7ca67d67132b5c1108e5e2906343631d",
                 "reference": "26ceae6c7ca67d67132b5c1108e5e2906343631d",
                 "shasum": ""
             },
@@ -50,19 +49,19 @@
                 "dbase",
                 "foxpro"
             ],
-            "time": "2017-01-09 22:28:13"
+            "time": "2017-01-09T22:28:13+00:00"
         },
         {
             "name": "ulrichsg/getopt-php",
             "version": "2.3.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/ulrichsg/getopt-php.git",
+                "url": "https://github.com/getopt-php/getopt-php.git",
                 "reference": "a51554a16e206a6642bf1a0d7d1e4378ec2ba980"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ulrichsg/getopt-php/zipball/a51554a16e206a6642bf1a0d7d1e4378ec2ba980",
+                "url": "https://api.github.com/repos/getopt-php/getopt-php/zipball/a51554a16e206a6642bf1a0d7d1e4378ec2ba980",
                 "reference": "a51554a16e206a6642bf1a0d7d1e4378ec2ba980",
                 "shasum": ""
             },
@@ -90,7 +89,7 @@
             ],
             "description": "Command line arguments parser for PHP 5.3",
             "homepage": "http://ulrichsg.github.io/getopt-php",
-            "time": "2015-03-28 14:09:20"
+            "time": "2015-03-28T14:09:20+00:00"
         }
     ],
     "packages-dev": [],
@@ -99,6 +98,8 @@
     "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
-    "platform": [],
+    "platform": {
+        "ext-mbstring": "*"
+    },
     "platform-dev": []
 }
