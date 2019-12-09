@@ -82,7 +82,7 @@ foreach ($operands as $sourcefile) {
             if (($column->getType() == Record::DBFFIELD_TYPE_DATETIME) && $cell) {
                 $cell = date('Y-m-d H:i:s', $cell-3600);
             }
-            $row .= escData($cell) . ",";
+            $row .= escData($cell, $column->getType()) . ",";
         }
         $row = substr($row, 0, -1) . ")";
         $insertLine .= $row;
