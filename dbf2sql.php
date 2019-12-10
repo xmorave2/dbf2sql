@@ -82,7 +82,7 @@ foreach ($operands as $sourcefile) {
             if (($column->getType() == Record::DBFFIELD_TYPE_DATETIME) && $cell) {
                 $cell = date('Y-m-d H:i:s', $cell-3600);
             }
-            $row .= "\"" . addslashes($cell) . "\",";
+            $row .= escData($cell, $column->getType()) . ",";
         }
         $row = substr($row, 0, -1) . ")";
         $insertLine .= $row;
@@ -126,4 +126,18 @@ function mapTypeToSql($type_short, $length, $decimal)
 function escName($name)
 {
     return "`" . $name . "`";
+}
+
+function escData($data, $type)
+{
+    $escapedData = addslashes($data);
+    if (in_array($type, array(
+            Record::DBFFIELD_TYPE_MEMO,
+            Record::DBFFIELD_TYPE_CHAR,
+            Record::DBFFIELD_TYPE_DATE,
+            Record::DBFFIELD_TYPE_DATETIME
+        ))) {
+        $escapedData = "\"" . $escapedData . "\"";
+    }
+    return $escapedData;
 }
